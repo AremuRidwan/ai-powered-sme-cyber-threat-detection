@@ -1,1 +1,26 @@
+import streamlit as st
+import joblib
+import numpy as np
+from src.alert_engine import generate_alert
+
+model = joblib.load("model.pkl")
+
+st.title("AI-Powered Cyber Threat Detection for SMEs")
+
+st.write("Enter network traffic features as comma-separated values:")
+
+user_input = st.text_area("Network Features")
+
+if user_input:
+    try:
+        features = np.array([float(x) for x in user_input.split(",")]).reshape(1, -1)
+        prediction = model.predict(features)[0]
+        alert = generate_alert(prediction)
+
+        st.subheader("Prediction Result")
+        st.write(prediction)
+        st.write(alert)
+
+    except Exception as e:
+        st.error("Invalid input format")
 
